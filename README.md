@@ -1,6 +1,6 @@
 # concourse-k8s
 
-Files for k8s resource creation for [concourse-ci](https://concourse.ci/).
+Files for creating a deployment of [concourse-ci](https://concourse.ci/) in kubernetes. _(Note: This currently does not work in GKE due to a kernel requirement of 3.19 or higher)_
 
 If you want to use these, you'll need to provide appropriate base64 encoded values in concourse-secret.yml.
 
