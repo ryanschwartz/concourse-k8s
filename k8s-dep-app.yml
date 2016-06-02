@@ -1,0 +1,65 @@
+---
+  apiVersion: "extensions/v1beta1"
+  kind: "Deployment"
+  metadata:
+    name: concourse-tsa
+  spec:
+    revisionHistoryLimit: 5
+    template:
+      metadata:
+        labels:
+          name: concourse-tsa
+      spec:
+        containers:
+          - name: concourse-tsa
+            image: ryanschwartz/concourse-ci
+            args:
+            - /concourse-web.sh
+            ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 2222
+              protocol: TCP
+            env:
+#            - name: CONCOURSE_DATA_SOURCE
+#              valueFrom:
+#                secretKeyRef:
+#                  name: concourse
+#                  key: concourse-pg-db-url
+            - name: CONCOURSE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: concourse
+                  key: concourse-url
+            - name: CONCOURSE_GITHUB_AUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: concourse
+                  key: github-auth-client-id
+            - name: CONCOURSE_GITHUB_AUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: concourse
+                  key: github-auth-client-secret
+            - name: CONCOURSE_GITHUB_AUTH_ORGANIZATION
+              valueFrom:
+                secretKeyRef:
+                  name: concourse
+                  key: github-auth-org
+#            - name: CONCOURSE_GITHUB_AUTH_TEAM
+#              valueFrom:
+#                secretKeyRef:
+#                  name: concourse
+#                  key: github-auth-team
+#            - name: CONCOURSE_GITHUB_AUTH_USER
+#              valueFrom:
+#                secretKeyRef:
+#                  name: concourse
+#                  key: github-auth-user
+            volumeMounts:
+            - name: var-lib-concourse-keys
+              mountPath: /var/lib/concourse/keys
+        volumes:
+          - name: var-lib-concourse-keys
+            secret:
+              secretName: concourse-keys

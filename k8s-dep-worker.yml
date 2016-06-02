@@ -1,0 +1,46 @@
+---
+  apiVersion: "extensions/v1beta1"
+  kind: "Deployment"
+  metadata:
+    name: concourse-worker
+  spec:
+    revisionHistoryLimit: 5
+    template:
+      metadata:
+        labels:
+          name: concourse-worker
+      spec:
+        containers:
+          - name: concourse-worker
+            image: ryanschwartz/concourse-ci
+            securityContext:
+              privileged: true
+            args:
+            -  /concourse-worker.sh
+            ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 2222
+              protocol: TCP
+            env:
+            - name: CONCOURSE_TSA_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: concourse
+                  key: concourse-tsa-host
+            - name: CONCOURSE_TSA_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: concourse
+                  key: concourse-tsa-port
+            volumeMounts:
+            - name: var-lib-concourse-keys
+              mountPath: /var/lib/concourse/keys
+            - name: var-lib-concourse-work
+              mountPath: /var/lib/concourse/work
+        volumes:
+          - name: var-lib-concourse-keys
+            secret:
+              secretName: concourse-keys
+          - name: var-lib-concourse-work
+            emptyDir: {}

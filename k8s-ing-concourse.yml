@@ -1,0 +1,11 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: concourse-ci
+  namespace: default
+spec:
+  backend:
+    serviceName: concourse-tsa
+    servicePort: 80
+  #tls:
+  #- secretName: <secret name w/your cert>
