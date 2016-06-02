@@ -1,3 +1,5 @@
+# this uses ryanschwartz/concourse-ci, which looks for dashed secrets
+# vs underscores, which k8s currently does not support
 ---
   apiVersion: "extensions/v1beta1"
   kind: "Deployment"
